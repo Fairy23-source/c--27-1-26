@@ -1,0 +1,42 @@
+#include <iostream>
+using namespace std;
+
+class Number
+{
+private:
+    int x;
+
+public:
+    // Constructor
+    Number(int a = 0)
+    {
+        x = a;
+    }
+
+    // Overloading unary - operator
+    void operator-()
+    {
+        x = -x;
+    }
+
+    // Display function
+    void display()
+    {
+        cout << "Value: " << x << endl;
+    }
+};
+
+int main()
+{
+    Number obj(10);
+
+    cout << "Before applying unary - operator: ";
+    obj.display();
+
+    -obj;   // Calls overloaded unary - operator
+
+    cout << "After applying unary - operator: ";
+    obj.display();
+
+    return 0;
+}
