@@ -1,0 +1,46 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class StringDemo
+{
+private:
+    char *str;
+
+public:
+    // Constructor
+    StringDemo()
+    {
+        char temp[100];
+
+        cout << "Enter a string: ";
+        cin.getline(temp, 100);
+
+        // Allocate memory dynamically
+        str = new char[strlen(temp) + 1];
+
+        // Copy string into allocated memory
+        strcpy(str, temp);
+    }
+
+    // Display function
+    void display()
+    {
+        cout << "String is: " << str << endl;
+    }
+
+    // Destructor
+    ~StringDemo()
+    {
+        delete[] str;
+        cout << "Memory freed successfully." << endl;
+    }
+};
+
+int main()
+{
+    StringDemo obj;
+    obj.display();
+
+    return 0;
+}
