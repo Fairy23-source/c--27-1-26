@@ -1,0 +1,135 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class Account {
+private:
+    int accNo;
+    string name;
+    float balance;
+
+public:
+    void createAccount() {
+        cout << "Enter Account Number: ";
+        cin >> accNo;
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Initial Balance: ";
+        cin >> balance;
+    }
+
+    void showAccount() {
+        cout << "\nAccount No: " << accNo;
+        cout << "\nName: " << name;
+        cout << "\nBalance: " << balance << endl;
+    }
+
+    void deposit(float amount) {
+        balance += amount;
+        cout << "Amount Deposited!\n";
+    }
+
+    void withdraw(float amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Amount Withdrawn!\n";
+        } else {
+            cout << "Insufficient Balance!\n";
+        }
+    }
+
+    int getAccNo() {
+        return accNo;
+    }
+
+    float getBalance() {
+        return balance;
+    }
+};
+
+// Function to write account to file
+void writeAccount() {
+    Account acc;
+    ofstream outFile("bank.dat", ios::binary | ios::app);
+    acc.createAccount();
+    outFile.write((char*)&acc, sizeof(acc));
+    outFile.close();
+}
+
+// Function to display account
+void displayAccount(int accNo) {
+    Account acc;
+    ifstream inFile("bank.dat", ios::binary);
+
+    while (inFile.read((char*)&acc, sizeof(acc))) {
+        if (acc.getAccNo() == accNo) {
+            acc.showAccount();
+            return;
+        }
+    }
+    cout << "Account not found!\n";
+}
+
+// Deposit/Withdraw
+void modifyAccount(int accNo, int choice) {
+    Account acc;
+    fstream file("bank.dat", ios::binary | ios::in | ios::out);
+
+    while (file.read((char*)&acc, sizeof(acc))) {
+        if (acc.getAccNo() == accNo) {
+            float amt;
+            cout << "Enter amount: ";
+            cin >> amt;
+
+            if (choice == 1)
+                acc.deposit(amt);
+            else
+                acc.withdraw(amt);
+
+            int pos = -1 * sizeof(acc);
+            file.seekp(pos, ios::cur);
+            file.write((char*)&acc, sizeof(acc));
+            return;
+        }
+    }
+    cout << "Account not found!\n";
+}
+
+int main() {
+    int choice, accNo;
+
+    do {
+        cout << "\n\n--- BANK MENU ---";
+        cout << "\n1. Create Account";
+        cout << "\n2. Display Account";
+        cout << "\n3. Deposit";
+        cout << "\n4. Withdraw";
+        cout << "\n5. Exit";
+        cout << "\nEnter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            writeAccount();
+            break;
+        case 2:
+            cout << "Enter Account No: ";
+            cin >> accNo;
+            displayAccount(accNo);
+            break;
+        case 3:
+            cout << "Enter Account No: ";
+            cin >> accNo;
+            modifyAccount(accNo, 1);
+            break;
+        case 4:
+            cout << "Enter Account No: ";
+            cin >> accNo;
+            modifyAccount(accNo, 2);
+            break;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
